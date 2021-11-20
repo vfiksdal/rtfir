@@ -1,0 +1,6 @@
+__pycache__/
+_rtfir.so
+rtfir_wrap.cxx
+rtfir.py
+*.o
+*.png
