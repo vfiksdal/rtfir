@@ -1,7 +1,7 @@
 # RTFIR
 Real time FIR filter drop-in classes and units for C, C++ and Python. Includes lowpass, highpass, bandpass and bandstop filters.
 
-## C++ example
+## Simple C++ example
 ```
 #include "rtfir.hpp"
 #include <stdlib.h>
@@ -20,7 +20,7 @@ int main(){
 }
 ```
 
-## C example
+## Simple C example
 ```
 #include "rtfir.h"
 #include <stdlib.h>
@@ -41,7 +41,7 @@ int main(){
 }
 ```
 
-## Python example
+## Simple Python example
 For python we have to compile the c++ library first:
 ```
 make
@@ -60,10 +60,13 @@ for i in range(0,1000):
   filtered.append(random.random())
 ```
 
-## Demo
+## Comprehensive example
 For a more comprehensive example, including other filter types, check out test.py which synthesizes a frequency sweep, filters it through the available filter types and plots the resulting fft's so you can assess it's performance. Use the --help parameter for further information on the script's usage.
 ```
 make
 ./test.py --samplerate 250 --taps 256
 ```
 
+![test_fft](https://user-images.githubusercontent.com/51258725/142729252-df98874d-99b1-411c-9286-8efd0fc9f260.png)
+
+![test_coeff](https://user-images.githubusercontent.com/51258725/142729255-c5f2d569-4f22-496c-98b1-8c8bd845f9b1.png)
