@@ -61,10 +61,10 @@ for i in range(0,1000):
 ```
 
 ## Comprehensive example
-For a more comprehensive example, including other filter types, check out test.py which synthesizes a frequency sweep, filters it through the available filter types and plots the resulting fft's so you can assess it's performance. Use the --help parameter for further information on the script's usage.
+For a more comprehensive example, including other filter types, check out example.py which synthesizes a frequency sweep, filters it through the available filter types and plots the resulting fft's so you can assess it's performance. Use the --help parameter for further information on the script's usage.
 ```
 make
-./test.py --samplerate 250 --taps 256
+./example.py --samplerate 250 --taps 256
 ```
 
 ![test_fft](https://user-images.githubusercontent.com/51258725/142729252-df98874d-99b1-411c-9286-8efd0fc9f260.png)
