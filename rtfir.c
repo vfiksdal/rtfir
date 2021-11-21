@@ -159,7 +159,7 @@ double RTFIR_filter(RTFIR *Filter,const double Sample){
 /*!\brief Free filter data and close object
  * \param Filter RTFIR filter object to free
  */
-void RTFIR_free(RTFIR *Filter){
+void RTFIR_close(RTFIR *Filter){
     if(Filter->coeff){
         free(Filter->coeff);
         Filter->coeff=0;

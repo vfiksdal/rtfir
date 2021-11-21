@@ -158,7 +158,7 @@ int main(int argc,char *argv[]){
                     printf("%f\r\n",filter.coeff[i]);
                 }
             }
-            RTFIR_free(&filter);
+            RTFIR_close(&filter);
         }
     }
 

@@ -10,11 +10,12 @@
 
 class RTFIR {
     protected:
-        std::vector<double> coeff;  //!< Coefficients of the FIR filter
-        std::vector<double> buffer; //!< buffer implementing the M(taps) delays 
-        unsigned int taps;          //!< Number of coefficients of the FIR filter
+        double *coeff;      //!< Coefficients of the FIR filter
+        double *buffer;     //!< Sample buffer for FIR filter
+        unsigned int taps;  //!< Number of coefficients of the FIR filter
     public:
         RTFIR(const unsigned int &Taps);
+        ~RTFIR();
         double Filter(const double &x);
         std::vector<double> GetCoefficients() const;
 };

@@ -9,9 +9,17 @@
  * \param Taps Number of taps in the filter
  */
 RTFIR::RTFIR(const unsigned int &Taps){
-    coeff.resize(Taps);
-    buffer.resize(Taps);
+    coeff=new double[Taps];
+    buffer=new double[Taps];
+    memset(buffer,0,Taps*sizeof(double));
     taps=Taps;
+}
+
+/*!\brief Deconstructor for base FIR object
+ */
+RTFIR::~RTFIR(){
+    delete [] coeff;
+    delete [] buffer;
 }
 
 /*!\brief Filters input data
@@ -19,7 +27,7 @@ RTFIR::RTFIR(const unsigned int &Taps){
  * \return Filtered sample
  */
 double RTFIR::Filter(const double &Sample){
-    double output=0.0;
+    double output=0;
     for(int i=taps-1;i>0;i--){
         buffer[i]=buffer[i-1];
     }
@@ -34,7 +42,12 @@ double RTFIR::Filter(const double &Sample){
  * \return List of FIR coefficients
  */
 std::vector<double> RTFIR::GetCoefficients() const{
-    return coeff;
+    std::vector<double> c;
+    c.resize(taps);
+    for(int i=0;i<taps;i++){
+        c[i]=coeff[i];
+    }
+    return c;
 }
 
 /*!\brief Constructor for lowpass FIR filter
@@ -71,7 +84,6 @@ RTFIR_highpass::RTFIR_highpass(const unsigned int &Taps,const double &Freq) : RT
         for(int i=-W;i<W;i++){
             if(i==0){
                 coeff[W]=1-(2*Freq);
-                //coeff[i+W]=-(2*Freq);
             }
             else{
                 coeff[i+W]=-sin(2*M_PI*Freq*i)/(i*M_PI);
@@ -116,7 +128,6 @@ RTFIR_bandstop::RTFIR_bandstop(const unsigned int &Taps,const double &Low,const 
         for(int i=-W;i<W;i++){
             if(i==0){
                 coeff[W]=1+((2*M_PI*Low)-(2*M_PI*High))/M_PI;
-                //coeff[W]=((2*M_PI*Low)-(2*M_PI*High))/M_PI;
             }
             else{
                 coeff[i+W]=(sin(2*M_PI*Low*i)-sin(2*M_PI*High*i))/(i*M_PI);

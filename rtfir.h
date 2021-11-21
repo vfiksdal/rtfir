@@ -25,7 +25,7 @@ bool RTFIR_init_bandstop(RTFIR *Filter,const unsigned int Taps,const double Low,
 double RTFIR_filter(RTFIR *Filter,const double Sample);
 
 // Deletes a FIR object
-void RTFIR_free(RTFIR *Filter);
+void RTFIR_close(RTFIR *Filter);
 
 #endif
 

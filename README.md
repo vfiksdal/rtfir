@@ -36,7 +36,7 @@ int main(){
     for(int i=0;i<1000;i++){
         filtered[i]=RTFIR_filter(&lowpass,rand()%100);
     }
-    RTFIR_free(&lowpass);
+    RTFIR_close(&lowpass);
     return 0;
 }
 ```
