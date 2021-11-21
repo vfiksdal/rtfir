@@ -6,10 +6,14 @@
 
 typedef enum {
     MODE_STDIN,
+    MODE_FILE,
     MODE_COEFF,
     MODE_PERF
 } testmode_t;
 
+/*!\brief High resolution clock
+ * \return Current time as a double
+ */
 double gettime(){
     struct timeval tv;
     struct timezone tz;
@@ -17,20 +21,23 @@ double gettime(){
     return 1e-6*tv.tv_usec + tv.tv_sec;
 }
 
-/*!\brief Filter data provided on stdin
+/*!\brief Filter data provided from a file
  * \param Filter Filter to use
  */
-void stdinfilter(RTFIR *Filter){
+void filterfile(RTFIR *Filter,FILE *FD){
     double sample=0;
     size_t bsize=256;
     char *buffer;
     buffer=(char*)malloc(bsize*sizeof(char));
     while(1){
-        size_t len=getline(&buffer,&bsize,stdin);
+        int len=getline(&buffer,&bsize,FD);
         if(len>1){
             buffer[len-1]=0;
             sample=strtod(buffer,0);
-            printf("%f\r\n",Filter->Filter(sample));
+            printf("%f\n",Filter->Filter(sample));
+        }
+        else{
+            break;
         }
     }
     free(buffer);
@@ -39,7 +46,7 @@ void stdinfilter(RTFIR *Filter){
 /*!\brief Performance-test filter
  * \param Filter Filter to use
  */
-void perfilter(RTFIR *Filter,char *Type){
+void filterperf(RTFIR *Filter,char *Type){
     // Generate random input data
     size_t n=1000;
     double samples[n];
@@ -56,37 +63,45 @@ void perfilter(RTFIR *Filter,char *Type){
         }
     }
     double end=gettime();
-    printf("Filtered %d samples with %s in %f seconds\r\n",n*n,Type,end-start);
+    printf("Filtered %d samples with %s in %f seconds\n",n*n,Type,end-start);
 }
 
+/*!\brief Displays help-message
+ */
 void help(char *Caller){
-    printf("RTFIR C++ Tester 1.0\r\n");
-    printf("For testing RTFIR C++ class\r\n");
-    printf("Vegard Fiksdal(C)2021\r\n");
-    printf("\r\n");
-    printf("Usage: %s [OPTIONS] [FILTER]\r\n",Caller);
-    printf("\r\n");
-    printf("Options:\r\n");
-    printf("\t--samplerate HZ\t\tSamplerate in hertz\r\n");
-    printf("\t--performance\t\tTest performance by filtering a large dataset\r\n");
-    printf("\t--stdin\t\t\tFilter data from stdin to stdout\r\n");
-    printf("\t--coeff\t\t\tDump filter coefficients\r\n");
-    printf("\r\n");
-    printf("Filters:\r\n");
-    printf("\t--lowpass TAPS F0\tTest lowpass filter\r\n");
-    printf("\t--highpass TAPS F0\tTest highpass filter\r\n");
-    printf("\t--bandpass TAPS F1 F2\tTest bandpass filter\r\n");
-    printf("\t--bandstop TAPS F1 F2\tTest bandstop filter\r\n");
-    printf("\r\n");
+    printf("RTFIR C++ Tester 1.0\n");
+    printf("For testing RTFIR C++ class\n");
+    printf("Vegard Fiksdal(C)2021\n");
+    printf("\n");
+    printf("Usage: %s [OPTIONS] [FILTER]\n",Caller);
+    printf("\n");
+    printf("Options:\n");
+    printf("\t--samplerate HZ\t\tSamplerate in hertz\n");
+    printf("\t--performance\t\tTest performance by filtering a large dataset\n");
+    printf("\t--file PATH\t\tFilter data from file\n");
+    printf("\t--stdin\t\t\tFilter data from stdin to stdout\n");
+    printf("\t--coeff\t\t\tDump filter coefficients\n");
+    printf("\n");
+    printf("Filters:\n");
+    printf("\t--lowpass TAPS F0\tTest lowpass filter\n");
+    printf("\t--highpass TAPS F0\tTest highpass filter\n");
+    printf("\t--bandpass TAPS F1 F2\tTest bandpass filter\n");
+    printf("\t--bandstop TAPS F1 F2\tTest bandstop filter\n");
+    printf("\n");
 }
 
 int main(int argc,char *argv[]){
     // Set sampling rate and mode from parameters
-    double samplerate=1000;
+    double samplerate=250;
+    char *filename=0;
     testmode_t mode=MODE_STDIN;
     for(int i=1;i<argc;i++){
         if(!strcmp(argv[i],"--samplerate")){
             samplerate=strtod(argv[++i],0);
+        }
+        if(!strcmp(argv[i],"--file")){
+            mode=MODE_FILE;
+            filename=argv[++i];
         }
         if(!strcmp(argv[i],"--stdin")){
             mode=MODE_STDIN;
@@ -106,6 +121,12 @@ int main(int argc,char *argv[]){
         help(argv[0]);
     }
 
+    // Open input
+    FILE *fd=stdin;
+    if(filename){
+        fd=fopen(filename,"rb");
+    }
+
     // Run filters
     char *type=0;
     RTFIR *filter=0;
@@ -113,6 +134,7 @@ int main(int argc,char *argv[]){
     for(int i=1;i<argc;i++){
         // Ignore already parsed parameters
         if(!strcmp(argv[i],"--samplerate")){i++;}
+        else if(!strcmp(argv[i],"--file")){i++;}
         else if(!strcmp(argv[i],"--stdin")){}
         else if(!strcmp(argv[i],"--coeff")){}
         else if(!strcmp(argv[i],"--performance")){}
@@ -145,18 +167,19 @@ int main(int argc,char *argv[]){
             filter=new RTFIR_bandstop(taps,flow/samplerate,fhigh/samplerate);
         }
         else{
-            printf("Invalid parameter: %s\r\n",argv[i]);
+            printf("Invalid parameter: %s\n",argv[i]);
             return -1;
         }
 
         // Execute tests
         if(filter){
-            if(mode==MODE_STDIN)    stdinfilter(filter);
-            if(mode==MODE_PERF)     perfilter(filter,type);
+            if(mode==MODE_STDIN)    filterfile(filter,stdin);
+            if(mode==MODE_FILE)     filterfile(filter,fd);
+            if(mode==MODE_PERF)     filterperf(filter,type);
             if(mode==MODE_COEFF){
                 std::vector<double> coeffs=filter->GetCoefficients();
                 for(int i=0;i<coeffs.size();i++){
-                    printf("%f\r\n",coeffs[i]);
+                    printf("%f\n",coeffs[i]);
                 }
             }
             delete filter;
@@ -164,6 +187,8 @@ int main(int argc,char *argv[]){
         }
     }
 
+    // Close input and terminate
+    fclose(fd);
     return 0;
 }
 
