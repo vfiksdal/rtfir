@@ -168,6 +168,7 @@ void RTFIR_free(RTFIR *Filter){
         free(Filter->buffer);
         Filter->buffer=0;
     }
+    Filter->taps=0;
 }
 
 
