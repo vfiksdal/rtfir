@@ -32,7 +32,7 @@ double RTFIR::Filter(const double &Sample){
         buffer[i]=buffer[i-1];
     }
     buffer[0]=Sample;
-    for(int i=0;i<taps;i++){
+    for(unsigned int i=0;i<taps;i++){
         output+=buffer[i]*coeff[i];
     }
     return output;  
@@ -44,7 +44,7 @@ double RTFIR::Filter(const double &Sample){
 std::vector<double> RTFIR::GetCoefficients() const{
     std::vector<double> c;
     c.resize(taps);
-    for(int i=0;i<taps;i++){
+    for(unsigned int i=0;i<taps;i++){
         c[i]=coeff[i];
     }
     return c;

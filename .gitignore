@@ -1,8 +1,10 @@
 __pycache__/
+MANIFEST
 _rtfir.so
 rtfir_wrap.cxx
 rtfir.py
 cpptest
 ctest
+test.csv
 *.o
 *.png

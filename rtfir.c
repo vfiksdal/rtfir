@@ -146,11 +146,11 @@ bool RTFIR_init_bandstop(RTFIR *Filter,const unsigned int Taps,const double Low,
  */
 double RTFIR_filter(RTFIR *Filter,const double Sample){
     double output=0.0;
-    for(int i=Filter->taps-1;i>0;i--){
+    for(unsigned int i=Filter->taps-1;i>0;i--){
         Filter->buffer[i]=Filter->buffer[i-1];
     }
     Filter->buffer[0]=Sample;
-    for(int i=0;i<Filter->taps;i++){
+    for(unsigned int i=0;i<Filter->taps;i++){
         output+=Filter->buffer[i]*Filter->coeff[i];
     }
     return output;  

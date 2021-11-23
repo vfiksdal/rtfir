@@ -13,4 +13,4 @@ test: python
 	./pytest.py --qa
 
 clean:
-	rm -rf *.so *.o *.png rtfir_wrap.cxx rtfir.py ctest cpptest __pycache__
+	rm -rf *.so *.o *.png rtfir_wrap.* rtfir.py ctest cpptest __pycache__
