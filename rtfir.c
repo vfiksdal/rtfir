@@ -4,6 +4,11 @@
 #include <math.h>
 #include "rtfir.h"
 
+// Some math.h implementations don't define M_PI
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 
 /*!\brief Initializes a RTFIR object and generates lowpass coefficients
  * \param Filter RTFIR filter object to initialize

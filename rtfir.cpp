@@ -4,6 +4,11 @@
 #include <math.h>
 #include "rtfir.hpp"
 
+// Some math.h implementations don't define M_PI
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 
 /*!\brief Constructor for base FIR object
  * \param Taps Number of taps in the filter
