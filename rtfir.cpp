@@ -32,11 +32,12 @@ RTFIR::~RTFIR(){
  * \return Filtered sample
  */
 double RTFIR::Filter(const double &Sample){
-    double output=0;
-    for(int i=taps-1;i>0;i--){
-        buffer[i]=buffer[i-1];
-    }
+    // Roll back samplebuffer
+    memmove(&buffer[1],&buffer[0],(taps-1)*sizeof(*buffer));
     buffer[0]=Sample;
+
+    // Perform multiplication
+    double output=0;
     for(unsigned int i=0;i<taps;i++){
         output+=buffer[i]*coeff[i];
     }

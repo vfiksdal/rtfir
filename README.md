@@ -46,7 +46,12 @@ For python we have to compile the c++ library first:
 ```
 make
 ```
-This will generate the python module (rtfir.py) and a shared library (_rtfir.so) which must either be installed in your system path or with your code.
+This will generate the python module (rtfir.py) and a shared library (_rtfir.so), allowing you to use the module in the current folder.
+Alternatively you could install the module to your system:
+```
+make install
+```
+Once you have compiled and/or installed the module you can proceed to use it:
 ```
 import random,rtfir
 

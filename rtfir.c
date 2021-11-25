@@ -150,11 +150,12 @@ bool RTFIR_init_bandstop(RTFIR *Filter,const unsigned int Taps,const double Low,
  * \return Filtered sample
  */
 double RTFIR_filter(RTFIR *Filter,const double Sample){
-    double output=0.0;
-    for(unsigned int i=Filter->taps-1;i>0;i--){
-        Filter->buffer[i]=Filter->buffer[i-1];
-    }
+    // Roll back samplebuffer
+    memmove(&Filter->buffer[1],&Filter->buffer[0],(Filter->taps-1)*sizeof(*Filter->buffer));
     Filter->buffer[0]=Sample;
+
+    // Perform multiplication
+    double output=0.0;
     for(unsigned int i=0;i<Filter->taps;i++){
         output+=Filter->buffer[i]*Filter->coeff[i];
     }
