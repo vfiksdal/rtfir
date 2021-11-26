@@ -12,11 +12,11 @@ install: clean
 	./setup.py install
 
 test: python
-	g++ -O2 cpptest.cpp rtfir.cpp -lm -o cpptest -Wno-psabi
-	gcc -O2 ctest.c rtfir.c -lm -o ctest
-	strip ctest cpptest
-	./pytest.py --qa
+	g++ -O2 test/cpptest.cpp rtfir.cpp -lm -o test/cpptest -Wno-psabi
+	gcc -O2 test/ctest.c rtfir.c -lm -o test/ctest
+	strip test/ctest test/cpptest
 
 clean:
-	rm -rf *.so *.o *.png rtfir_wrap.* rtfir.py ctest cpptest 
 	rm -rf __pycache__ build dist rtfir.egg-info MANIFEST.in
+	rm -rf test/*.png test/ctest test/cpptest test/test.csv
+	rm -rf *.so *.o rtfir_wrap.* rtfir.py

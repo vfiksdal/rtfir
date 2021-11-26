@@ -3,8 +3,8 @@ MANIFEST
 _rtfir.so
 rtfir_wrap.cxx
 rtfir.py
-cpptest
-ctest
-test.csv
+test/cpptest
+test/ctest
+test/test.csv
 *.o
 *.png

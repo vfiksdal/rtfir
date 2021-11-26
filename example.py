@@ -50,7 +50,7 @@ while i<len(sys.argv):
         i+=1
         span=float(sys.argv[i])
     elif sys.argv[i]=='--help':
-        print('RTFIR Python Test 1.0')
+        print('RTFIR Python Example 1.0')
         print('Tests RTFIR implementation for C++ and python')
         print('Fiksdal(C)2021')
         print('')
@@ -98,43 +98,6 @@ for i in range(0,len(sweep)):
     bandpass[i]=bpf.Filter(sweep[i])
     bandstop[i]=bsf.Filter(sweep[i])
 
-# Plot coefficients
-fig, axs = plt.subplots(2, 2)
-axs[0, 0].plot(lpf.GetCoefficients())
-axs[0, 0].set_title('Lowpass')
-axs[0, 1].plot(hpf.GetCoefficients())
-axs[0, 1].set_title('Highpass')
-axs[1, 0].plot(bpf.GetCoefficients())
-axs[1, 0].set_title('Bandpass')
-axs[1, 1].plot(bsf.GetCoefficients())
-axs[1, 1].set_title('Bandstop')
-for ax in axs.flat: ax.label_outer()
-fig.suptitle('FIR coefficients for '+str(taps)+' taps')
-fig.set_size_inches(11.7,8.3)
-fig.tight_layout()
-plt.savefig('test_coeff.png')
-
-# Plot timeseries
-fig, axs = plt.subplots(2, 2)
-x=np.linspace(0,t,len(sweep))
-axs[0, 0].plot(x,sweep)
-axs[0, 0].plot(x,lowpass)
-axs[0, 0].set_title('Lowpass')
-axs[0, 1].plot(x,sweep)
-axs[0, 1].plot(x,highpass)
-axs[0, 1].set_title('Highpass')
-axs[1, 0].plot(x,sweep)
-axs[1, 0].plot(x,bandpass)
-axs[1, 0].set_title('Bandpass')
-axs[1, 1].plot(x,sweep)
-axs[1, 1].plot(x,bandstop)
-axs[1, 1].set_title('Bandstop')
-for ax in axs.flat: ax.set(xlabel='Time [s]',ylabel='Amplitude')
-for ax in axs.flat: ax.label_outer()
-fig.suptitle('Filtered chirp\nFlow='+str(flow)+'Hz Fhigh='+str(fhigh)+'Hz Taps='+str(taps)+'\nFs='+str(fs)+'Hz t='+str(t)+'s')
-fig.set_size_inches(11.7,8.3)
-fig.tight_layout()
-plt.savefig('test_timeseries.png')
 
 # Plot FFT data
 fig, axs = plt.subplots(2, 2)

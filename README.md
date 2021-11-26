@@ -1,5 +1,5 @@
 # RTFIR
-Real time FIR filter drop-in classes and units for C, C++ and Python. Includes lowpass, highpass, bandpass and bandstop filters.
+Real time FIR filter drop-in classes and units for C, C++ and Python. Includes lowpass, highpass, bandpass and bandstop filters. The implementation aims to be lean, yet flexible and easy to understand, providing high performance with a small footprint suitable for embedded systems such as beaglebone, raspberry pi or even arduino.
 
 ## Simple C++ example
 ```
@@ -47,7 +47,7 @@ For python we have to compile the c++ library first:
 make
 ```
 This will generate the python module (rtfir.py) and a shared library (_rtfir.so), allowing you to use the module in the current folder.
-Alternatively you could install the module to your system:
+Optionally you can choose to install the module to your system:
 ```
 make install
 ```

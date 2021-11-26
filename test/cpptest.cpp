@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "rtfir.h"
+#include "../rtfir.hpp"
 
 typedef enum {
     MODE_STDIN,
@@ -21,7 +21,7 @@ double gettime(){
     return 1e-6*tv.tv_usec + tv.tv_sec;
 }
 
-/*!\brief Filter data provided on stdin
+/*!\brief Filter data provided from a file
  * \param Filter Filter to use
  */
 void filterfile(RTFIR *Filter,FILE *FD){
@@ -34,7 +34,7 @@ void filterfile(RTFIR *Filter,FILE *FD){
         if(len>1){
             buffer[len-1]=0;
             sample=strtod(buffer,0);
-            printf("%f\n",RTFIR_filter(Filter,sample));
+            printf("%f\n",Filter->Filter(sample));
         }
         else{
             break;
@@ -59,7 +59,7 @@ void filterperf(RTFIR *Filter,char *Type){
     double dummy;
     for(size_t i=0;i<n;i++){
         for(size_t j=0;j<n;j++){
-            dummy=RTFIR_filter(Filter,samples[j]);
+            dummy=Filter->Filter(samples[j]);
         }
     }
     double end=gettime();
@@ -69,8 +69,8 @@ void filterperf(RTFIR *Filter,char *Type){
 /*!\brief Displays help-message
  */
 void help(char *Caller){
-    printf("RTFIR C Tester 1.0\n");
-    printf("For testing RTFIR C unit\n");
+    printf("RTFIR C++ Tester 1.0\n");
+    printf("For testing RTFIR C++ class\n");
     printf("Vegard Fiksdal(C)2021\n");
     printf("\n");
     printf("Usage: %s [OPTIONS] [FILTER]\n",Caller);
@@ -93,8 +93,8 @@ void help(char *Caller){
 int main(int argc,char *argv[]){
     // Set sampling rate and mode from parameters
     double samplerate=250;
-    testmode_t mode=MODE_STDIN;
     char *filename=0;
+    testmode_t mode=MODE_STDIN;
     for(int i=1;i<argc;i++){
         if(!strcmp(argv[i],"--samplerate")){
             samplerate=strtod(argv[++i],0);
@@ -129,7 +129,7 @@ int main(int argc,char *argv[]){
 
     // Run filters
     char *type=0;
-    RTFIR filter;
+    RTFIR *filter=0;
     memset(&filter,0,sizeof(filter));
     for(int i=1;i<argc;i++){
         // Ignore already parsed parameters
@@ -144,27 +144,27 @@ int main(int argc,char *argv[]){
             type=argv[i]+2;
             unsigned int taps=atoi(argv[++i]);
             double cutoff=strtod(argv[++i],0);
-            RTFIR_init_lowpass(&filter,taps,cutoff/samplerate);
+            filter=new RTFIR_lowpass(taps,cutoff/samplerate);
         }
         else if(!strcmp(argv[i],"--highpass")){
             type=argv[i]+2;
             unsigned int taps=atoi(argv[++i]);
             double cutoff=strtod(argv[++i],0);
-            RTFIR_init_highpass(&filter,taps,cutoff/samplerate);
+            filter=new RTFIR_highpass(taps,cutoff/samplerate);
         }
         else if(!strcmp(argv[i],"--bandpass")){
             type=argv[i]+2;
             unsigned int taps=atoi(argv[++i]);
             double flow=strtod(argv[++i],0);
             double fhigh=strtod(argv[++i],0);
-            RTFIR_init_bandpass(&filter,taps,flow/samplerate,fhigh/samplerate);
+            filter=new RTFIR_bandpass(taps,flow/samplerate,fhigh/samplerate);
         }
         else if(!strcmp(argv[i],"--bandstop")){
             type=argv[i]+2;
             unsigned int taps=atoi(argv[++i]);
             double flow=strtod(argv[++i],0);
             double fhigh=strtod(argv[++i],0);
-            RTFIR_init_bandstop(&filter,taps,flow/samplerate,fhigh/samplerate);
+            filter=new RTFIR_bandstop(taps,flow/samplerate,fhigh/samplerate);
         }
         else{
             printf("Invalid parameter: %s\n",argv[i]);
@@ -172,16 +172,18 @@ int main(int argc,char *argv[]){
         }
 
         // Execute tests
-        if(filter.taps){
-            if(mode==MODE_STDIN)    filterfile(&filter,stdin);
-            if(mode==MODE_FILE)     filterfile(&filter,fd);
-            if(mode==MODE_PERF)     filterperf(&filter,type);
+        if(filter){
+            if(mode==MODE_STDIN)    filterfile(filter,stdin);
+            if(mode==MODE_FILE)     filterfile(filter,fd);
+            if(mode==MODE_PERF)     filterperf(filter,type);
             if(mode==MODE_COEFF){
-                for(int i=0;i<filter.taps;i++){
-                    printf("%f\n",filter.coeff[i]);
+                std::vector<double> coeffs=filter->GetCoefficients();
+                for(int i=0;i<coeffs.size();i++){
+                    printf("%f\n",coeffs[i]);
                 }
             }
-            RTFIR_close(&filter);
+            delete filter;
+            filter=0;
         }
     }
 
