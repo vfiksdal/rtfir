@@ -177,4 +177,3 @@ void RTFIR_close(RTFIR *Filter){
     Filter->taps=0;
 }
 
-

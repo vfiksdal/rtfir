@@ -3,16 +3,8 @@
 # Script to test realtime fir filters
 #
 
-
-# Import rtfir from parent path
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-import rtfir
-
 # Standard imports
-import time,sys,random,subprocess
+import time,sys,random,subprocess,rtfir
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -353,6 +345,7 @@ def helpmsg(caller):
     print('\t--chirp\t\t\tSynthesize frequency sweep and filter it')
     print('\t--perf\t\t\tMeasure number of samples per second for filter')
     print('\t--coeff\t\t\tPlot filter coefficients')
+    print('\t--version\t\tGet version of linked rtfir')
     print('')
     exit()
 
@@ -378,6 +371,9 @@ while i<len(sys.argv):
     elif sys.argv[i]=='--taps':
         i+=1
         taps=int(sys.argv[i])
+    elif sys.argv[i]=='--version':
+        print(rtfir.RTFIR_Version())
+        exit()
     elif sys.argv[i]=='--help':
         helpmsg(sys.argv[0])
     else:

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../rtfir.h"
+#include "../src/rtfir.h"
 
 typedef enum {
     MODE_STDIN,

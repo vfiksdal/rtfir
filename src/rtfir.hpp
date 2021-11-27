@@ -7,6 +7,7 @@
 #define _RTFIR_HPP_
 
 #include <vector>
+#include <string>
 
 class RTFIR {
     protected:
@@ -18,6 +19,10 @@ class RTFIR {
         ~RTFIR();
         double Filter(const double &x);
         std::vector<double> GetCoefficients() const;
+#ifdef ABOUT
+        // Special case for python-module, inform about version
+        static std::string Version(){return ABOUT;}
+#endif
 };
     
 class RTFIR_lowpass : public RTFIR {

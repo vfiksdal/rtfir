@@ -3,15 +3,7 @@
 # Script to test realtime fir filters
 #
 
-# Import rtfir from parent path
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-import rtfir
-
-# Import standards
-import time,sys,random,subprocess
+import time,sys,random,subprocess,rtfir
 import matplotlib.pyplot as plt
 import numpy as np
 
