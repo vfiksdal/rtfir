@@ -44,7 +44,7 @@ def performance(fs,taps):
     cpp=1000000/float(result[result.find(' in ')+4:result.find(' seconds')])
     result=call('./ctest','--samplerate '+str(fs)+' --performance --lowpass '+str(taps)+' 10')
     c=1000000/float(result[result.find(' in ')+4:result.find(' seconds')])
-    print('taps:'+str(taps)+'\tc:'+str(c)+'sps cpp:'+str(cpp)+'s python: '+str(p)+'sps')
+    print('taps:'+str(taps)+'\tc:'+str(c)+'sps c++:'+str(cpp)+'sps python: '+str(p)+'sps')
     return c,cpp,p
 
 
@@ -345,7 +345,6 @@ def helpmsg(caller):
     print('\t--chirp\t\t\tSynthesize frequency sweep and filter it')
     print('\t--perf\t\t\tMeasure number of samples per second for filter')
     print('\t--coeff\t\t\tPlot filter coefficients')
-    print('\t--version\t\tGet version of linked rtfir')
     print('')
     exit()
 
@@ -371,9 +370,6 @@ while i<len(sys.argv):
     elif sys.argv[i]=='--taps':
         i+=1
         taps=int(sys.argv[i])
-    elif sys.argv[i]=='--version':
-        print(rtfir.RTFIR_Version())
-        exit()
     elif sys.argv[i]=='--help':
         helpmsg(sys.argv[0])
     else:
