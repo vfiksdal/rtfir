@@ -62,7 +62,7 @@ taps=100        # FIR taps
 lowpass=rtfir.RTFIR_lowpass(taps,cutoff/samplerate)
 filtered=[]
 for i in range(0,1000):
-  filtered.append(random.random())
+  filtered.append(lowpass.Filter(random.random()))
 ```
 
 ## Comprehensive example
